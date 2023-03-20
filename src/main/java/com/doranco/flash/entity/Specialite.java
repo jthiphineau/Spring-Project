@@ -1,13 +1,12 @@
 package com.doranco.flash.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -43,4 +42,7 @@ public class Specialite implements Serializable{
     @UpdateTimestamp
     @Column(name = "date_modification")
     private LocalDateTime dateModification;
+
+    @OneToMany(mappedBy = "specialite",cascade = CascadeType.ALL)
+    List<Etudiant> etudiants = new ArrayList<>();
 }

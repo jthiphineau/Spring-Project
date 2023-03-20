@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SpecialiteServiceImpl implements SpecialiteService {
     private final SpecialiteRepository specialiteRepository;
@@ -22,21 +24,32 @@ public class SpecialiteServiceImpl implements SpecialiteService {
     @Override
     public ResponseEntity<?> create(SpecialiteDto specialiteDto) {
         // TODO validation des attributs
-        var specialite =  modelMapper.map(specialiteDto, Specialite.class);
-        try{
+        var specialite = modelMapper.map(specialiteDto, Specialite.class);
+        try {
             specialiteRepository.save(specialite);
             //convertir entity en dtp
             specialiteDto = modelMapper.map(specialite, SpecialiteDto.class);
-        }catch (Exception ex){
-            return CustomResponse.errorResponse(500,ex.getMessage());
+        } catch (Exception ex) {
+            return CustomResponse.errorResponse(500, ex.getMessage());
 
         }
-        return CustomResponse.succesResponse(201,specialiteDto);
+        return CustomResponse.succesResponse(201, specialiteDto);
     }
 
     @Override
     public ResponseEntity<?> findById(Integer id) {
-        return null;
+        Optional<Specialite> specialiteOptional; // Optional est un conteneur d'objet
+        try {
+            specialiteOptional = specialiteRepository.findById(id);
+            //tester si specialite est present dans le conteneur optional
+        } catch (Exception e) {
+            return CustomResponse.errorResponse(500, e.getMessage());
+        }
+        if (specialiteOptional.isEmpty()) {
+            // si le conteneur est vide
+            return CustomResponse.errorResponse(400, "Specialite avec id" + id + " introuvable");
+        }
+        return CustomResponse.succesResponse(200, specialiteOptional.get());
     }
 
     @Override

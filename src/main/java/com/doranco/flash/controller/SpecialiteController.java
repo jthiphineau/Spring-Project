@@ -30,5 +30,9 @@ public class SpecialiteController {
         return specialiteService.create(specialiteDto);
 
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable(name = "id") Integer id) {
+        return specialiteService.findById(id);
+    }
 
 }
